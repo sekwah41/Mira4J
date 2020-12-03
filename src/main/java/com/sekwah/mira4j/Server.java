@@ -10,7 +10,7 @@ public class Server {
         return instance;
     }
 
-    public Server(DataStorage dataStorage) {
+    public Server() {
         instance = this;
     }
 }

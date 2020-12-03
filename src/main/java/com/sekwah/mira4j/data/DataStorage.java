@@ -3,9 +3,8 @@ package com.sekwah.mira4j.data;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.lang.reflect.Type;
 
 public class DataStorage {
 
@@ -15,6 +14,22 @@ public class DataStorage {
 
     public DataStorage(File dataFolder) {
         this.dataFolder = dataFolder;
+    }
+
+    public <T> T loadJson(Class<T> dataHolder, String location) {
+        InputStream jsonResource = this.loadResource(location);
+        if(jsonResource == null) {
+            try {
+                return dataHolder.newInstance();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+        BufferedReader bufReader = new BufferedReader(new InputStreamReader(jsonResource));
+        return gson.fromJson(bufReader, dataHolder);
     }
 
     public void storeJson(Object dataHolder, String location) {
@@ -35,6 +50,18 @@ public class DataStorage {
                 e.printStackTrace();
             }
         }
+    }
+
+    public InputStream loadResource(String location) {
+        File inFile = new File(dataFolder, location);
+        if (inFile.exists() && !inFile.isDirectory()) {
+            try {
+                return new FileInputStream(inFile);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 
 }
