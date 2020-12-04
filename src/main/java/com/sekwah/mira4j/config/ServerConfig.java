@@ -6,4 +6,6 @@ public class ServerConfig {
 
     public int port = 22023;
 
+    public int maxPingMS = 2500;
+
 }

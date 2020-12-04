@@ -2,10 +2,12 @@ package com.sekwah.mira4j;
 
 import com.sekwah.mira4j.config.ServerConfig;
 import com.sekwah.mira4j.data.DataStorage;
+import com.sekwah.mira4j.network.Server;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
+import java.net.BindException;
 
 public class Mira4J {
 
@@ -23,9 +25,19 @@ public class Mira4J {
 
         dataStorage.storeJson(serverConfig, SERVER_SETTINGS_LOC);
 
-        LOGGER.info("Starting up server...");
+        server = new Server(serverConfig);
 
-        server = new Server();
+        try {
+            server.start();
+        } catch (BindException e) {
+            LOGGER.error("Port already in use");
+        } catch (Exception e) {
+            LOGGER.error("Server crashed");
+            e.printStackTrace();
+            System.exit(-1);
+        } finally {
+            System.exit(0);
+        }
     }
 
 }

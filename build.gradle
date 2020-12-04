@@ -27,4 +27,5 @@ dependencies {
 
 application {
     mainClass = 'com.sekwah.mira4j.Launch'
+    executableDir = 'run'
 }
