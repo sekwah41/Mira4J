@@ -23,7 +23,7 @@ public class Packets {
         
 
         hazel_packets = new HashMap<>();
-        hazel_packets.put(MessageType.HostingGame, HostGamePacket.class);
+        hazel_packets.put(MessageType.HostGame, HostGamePacket.class);
     }
     
     public static Packet<?> getPacketFromType(PacketType type) {
@@ -125,18 +125,22 @@ public class Packets {
     }
     
     public enum MessageType {
-        HostingGame(0),
-        GameJoinDisconnect(1),
-        GameStarted(2),
-        PlayerLeft(4),
-        GameInfo(5),
-        GameInfoTo(6),
+        HostGame(0),
+        JoinGame(1),
+        StartGame(2),
+        RemoveGame(3),
+        RemovePlayer(4),
+        GameData(5),
+        GameDataTo(6),
         JoinedGame(7),
-        AlterGameInfo(10),
+        EndGame(8),
+        GetGameList(9),
+        AlterGame(10),
         KickPlayer(11),
-        ChangeServer(13),
-        ServerList(14),
-        GameList(16)
+        WaitForHost(12),
+        Redirect(13),
+        ReselectServer(14),
+        GetGameListV2(16)
         ;
         
         final int id;

@@ -8,18 +8,12 @@ public class HostGame extends HazelMessage {
     private int gameId;
     
     public HostGame(int gameId) {
-        this.type = MessageType.HostingGame.getId();
+        this.type = MessageType.HostGame.getId();
         this.gameId = gameId;
     }
     
     @Override
-    public void writeData(PacketBuf writer) {
-        PacketBuf buf = PacketBuf.create(4096);
-        buf.writeInt(gameId);
-        
-        this.data = buf.readBytes(buf.readableBytes());
-        buf.release();
-        super.writeData(writer);
+    public void writeData0(PacketBuf writer) {
+        writer.writeInt(gameId);
     }
-    
 }

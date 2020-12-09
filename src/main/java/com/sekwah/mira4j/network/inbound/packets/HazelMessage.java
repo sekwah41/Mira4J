@@ -24,10 +24,27 @@ public class HazelMessage implements Packet<ClientListener> {
     }
     
     @Override
-    public void writeData(PacketBuf writer) {
-        writer.writeShort(data.length);
-        writer.writeByte(type);
-        writer.writeBytes(data);
+    public final void writeData(PacketBuf writer) {
+        if(!isSubclass()) {
+            writer.writeShort(data.length);
+            writer.writeByte(type);
+            writer.writeBytes(data);
+        } else {
+            PacketBuf buf = PacketBuf.create(4096);
+            writeData0(buf);
+            byte[] data = buf.readBytes(buf.readableBytes());
+            buf.release();
+            writer.writeShort(data.length);
+            writer.writeByte(type);
+            writer.writeBytes(data);
+        }
+        
+    }
+    
+    protected void writeData0(PacketBuf writer) {}
+    
+    protected boolean isSubclass() {
+        return getClass() != HazelMessage.class;
     }
     
     @Override
