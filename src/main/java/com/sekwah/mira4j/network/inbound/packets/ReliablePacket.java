@@ -7,6 +7,20 @@ public class ReliablePacket implements Packet<ClientListener> {
     private int nonce;
     private byte[] data;
     
+    public ReliablePacket() {
+        
+    }
+    
+    public ReliablePacket(int nonce, byte[] data) {
+        this.nonce = nonce;
+        this.data = data;
+    }
+    
+    public ReliablePacket(int nonce, HazelMessage msg) {
+        this.nonce = nonce;
+        this.data = msg.toBytes();
+    }
+    
     @Override
     public void readData(PacketBuf reader) {
         nonce = reader.readUnsignedShortBE();
@@ -14,7 +28,10 @@ public class ReliablePacket implements Packet<ClientListener> {
     }
 
     @Override
-    public void writeData(PacketBuf writer) {}
+    public void writeData(PacketBuf writer) {
+        writer.writeUnsignedShortBE(nonce);
+        writer.writeBytes(data);
+    }
 
     @Override
     public void forwardPacket(ClientListener listener) {

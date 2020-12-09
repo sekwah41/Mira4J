@@ -2,6 +2,9 @@ package com.sekwah.mira4j.network;
 
 import java.nio.charset.StandardCharsets;
 
+import com.sekwah.mira4j.game.GameOptionsData;
+import com.sekwah.mira4j.network.Packets.Maps;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -61,6 +64,10 @@ public class PacketBuf {
     
     public int readIntBE() {
         return buffer.readInt();
+    }
+    
+    public float readFloat() {
+        return buffer.readFloatLE();
     }
     
     public short readUnsignedByte() {
@@ -130,6 +137,40 @@ public class PacketBuf {
         return bytes;
     }
     
+    public GameOptionsData readGameOptionsData() {
+        GameOptionsData data = new GameOptionsData();
+        
+        // TODO: Make sure that we read all the packet bytes!
+        /* int length = */ readUnsignedPacketInt();
+        try {
+            data.version = readByte();
+            data.maxPlayers = readByte();
+            data.keywords = readUnsignedInt();
+            data.maps = Maps.fromId(readByte());
+            data.playerSpeedModifier = readFloat();
+            data.crewmateLightModifier = readFloat();
+            data.impostorLightModifier = readFloat();
+            data.killCooldown = readFloat();
+            data.numCommonTasks = readByte();
+            data.numLongTasks = readByte();
+            data.numShortTasks = readByte();
+            data.numEmergencyMeetings = readUnsignedInt();
+            data.numImpostors = readByte();
+            data.killDistance = readByte();
+            data.discussionTime = readUnsignedInt();
+            data.votingTime = readUnsignedInt();
+            data.isDefaults = readBoolean();
+            data.emergencyCooldown = readByte();
+            data.confirmEjects = readBoolean();
+            data.visualTasks = readBoolean();
+            data.anonymousVotes = readBoolean();
+            data.taskBarUpdates = readByte();
+        } catch(IndexOutOfBoundsException e) {
+        }
+        
+        return data;
+    }
+    
     public void writeBoolean(boolean value) {
         buffer.writeBoolean(value);
     }
@@ -146,12 +187,24 @@ public class PacketBuf {
         buffer.writeShort(value);
     }
     
+    public void writeUnsignedShortBE(long value) {
+        buffer.writeShort((int)value);
+    }
+    
     public void writeInt(int value) {
         buffer.writeIntLE(value);
     }
     
+    public void writeUnsignedInt(long value) {
+        buffer.writeIntLE((int)value);
+    }
+    
     public void writeIntBE(int value) {
         buffer.writeInt(value);
+    }
+    
+    public void writeFloat(float value) {
+        buffer.writeFloatLE(value);
     }
     
     public void writeUnsignedPacketInt(int value) {
@@ -199,11 +252,48 @@ public class PacketBuf {
         buffer.writeBytes(bytes);
     }
     
+    public void writeGameOptionsData(GameOptionsData data) {
+        PacketBuf buf = PacketBuf.wrap(new byte[2048]);
+        buf.writeByte(data.version);
+        buf.writeByte(data.maxPlayers);
+        buf.writeUnsignedInt(data.keywords);
+        buf.writeByte(data.maps.getId());
+        buf.writeFloat(data.playerSpeedModifier);
+        buf.writeFloat(data.crewmateLightModifier);
+        buf.writeFloat(data.impostorLightModifier);
+        buf.writeFloat(data.killCooldown);
+        buf.writeByte(data.numCommonTasks);
+        buf.writeByte(data.numLongTasks);
+        buf.writeByte(data.numShortTasks);
+        buf.writeUnsignedInt(data.numEmergencyMeetings);
+        buf.writeByte(data.numImpostors);
+        buf.writeByte(data.killDistance);
+        buf.writeUnsignedInt(data.discussionTime);
+        buf.writeUnsignedInt(data.votingTime);
+        buf.writeBoolean(data.isDefaults);
+        buf.writeByte(data.emergencyCooldown);
+        buf.writeBoolean(data.confirmEjects);
+        buf.writeBoolean(data.visualTasks);
+        buf.writeBoolean(data.anonymousVotes);
+        buf.writeByte(data.taskBarUpdates);
+        
+        byte[] bytes = buf.readBytes(buf.readableBytes());
+        writeUnsignedPacketInt(bytes.length);
+        writeBytes(bytes);
+    }
+    
     public static PacketBuf wrap(ByteBuf buffer) {
         return new PacketBuf(buffer);
     }
     
     public static PacketBuf wrap(byte[] bytes) {
         return new PacketBuf(Unpooled.wrappedBuffer(bytes));
+    }
+
+    /**
+     * You need to release the buffer returned from this method
+     */
+    public static PacketBuf create(int size) {
+        return new PacketBuf(Unpooled.buffer(size));
     }
 }

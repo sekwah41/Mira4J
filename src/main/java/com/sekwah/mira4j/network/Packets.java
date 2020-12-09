@@ -6,9 +6,11 @@ import java.util.Map;
 
 import com.sekwah.mira4j.Mira4J;
 import com.sekwah.mira4j.network.inbound.packets.*;
+import com.sekwah.mira4j.network.inbound.packets.hazel.HostGamePacket;
 
 public class Packets {
     private static final Map<PacketType, Class<? extends Packet<?>>> packets;
+    private static final Map<MessageType, Class<? extends Packet<?>>> hazel_packets;
     
     static {
         packets = new HashMap<>();
@@ -18,6 +20,10 @@ public class Packets {
         packets.put(PacketType.DISCONNECT, DisconnectPacket.class);
         packets.put(PacketType.ACKNOWLEDGEMENT, AcknowledgePacket.class);
         packets.put(PacketType.PING, PingPacket.class);
+        
+
+        hazel_packets = new HashMap<>();
+        hazel_packets.put(MessageType.HostingGame, HostGamePacket.class);
     }
     
     public static Packet<?> getPacketFromType(PacketType type) {
@@ -43,6 +49,24 @@ public class Packets {
             Class<? extends Packet<?>> item = packets.get(key);
             if(item.equals(clazz)) return key;
         }
+        return null;
+    }
+    
+    public static Packet<?> getHazelPacket(MessageType type) {
+        Class<? extends Packet<?>> clazz = hazel_packets.get(type);
+        if(clazz == null) {
+            Mira4J.LOGGER.error("Failed to create packet of type {}", type.toString());
+            return null;
+        }
+        
+        try {
+            return clazz.getConstructor().newInstance();
+        } catch(InstantiationException | IllegalAccessException | IllegalArgumentException
+           | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+            Mira4J.LOGGER.error("Failed to create packet of type {}", type.toString());
+            e.printStackTrace();
+        }
+        
         return null;
     }
     
@@ -76,7 +100,9 @@ public class Packets {
     }
 
     public enum Maps {
-        THE_SKELD(0x00);
+        THE_SKELD(0),
+        MIRA_HQ(1),
+        POLUS(2);
 
         private int id;
 
@@ -116,6 +142,10 @@ public class Packets {
         final int id;
         MessageType(int id) {
             this.id = id;
+        }
+        
+        public int getId() {
+            return id;
         }
         
         public static MessageType fromId(int id) {

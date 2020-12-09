@@ -34,7 +34,7 @@ public class ConnectionManager extends SimpleChannelInboundHandler<Packet<?>> {
     private <T> void forwardToPacket(Packet<T> packet, PacketListener packetListener) {
         try {
             packet.forwardPacket((T)packetListener);
-        } catch(Exception e) {
+        } catch(ClassCastException e) {
             e.printStackTrace();
         }
     }
