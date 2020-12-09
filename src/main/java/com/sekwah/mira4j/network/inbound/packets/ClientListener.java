@@ -34,6 +34,8 @@ public class ClientListener implements PacketListener {
     
     public void onDisconnectPacket(DisconnectPacket packet) {
         Mira4J.LOGGER.info("A 'Disconnect' packet");
+        
+        manager.disconnect();
     }
     
     public void onReliablePacket(ReliablePacket packet) {

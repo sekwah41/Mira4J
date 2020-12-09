@@ -99,7 +99,9 @@ public class ConnectionManager extends SimpleChannelInboundHandler<Packet<?>> {
     }
 
     public void disconnect() {
-        
+        hasRemote = false;
+        ChannelFuture channelfuture = this.channel.disconnect();
+        channelfuture.addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
     }
 
     public void connect(InetSocketAddress addr) {
