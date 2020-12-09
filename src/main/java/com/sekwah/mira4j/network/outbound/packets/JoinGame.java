@@ -4,12 +4,9 @@ import com.sekwah.mira4j.network.PacketBuf;
 import com.sekwah.mira4j.network.Packets.MessageType;
 import com.sekwah.mira4j.network.inbound.packets.HazelMessage;
 
-public class HostGame extends HazelMessage {
-    private int gameId;
-    
-    public HostGame(int gameId) {
-        super(MessageType.HostGame);
-        this.gameId = gameId;
+public class JoinGame extends HazelMessage {
+    public JoinGame(int gameId) {
+        super(MessageType.JoinGame);
     }
     
     @Override
@@ -19,6 +16,6 @@ public class HostGame extends HazelMessage {
     
     @Override
     public void writeData0(PacketBuf writer) {
-        writer.writeInt(gameId);
+        
     }
 }

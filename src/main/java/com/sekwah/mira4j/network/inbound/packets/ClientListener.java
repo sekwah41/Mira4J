@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import com.sekwah.mira4j.Mira4J;
 import com.sekwah.mira4j.network.*;
+import com.sekwah.mira4j.network.decoder.HazelDecoder;
 import com.sekwah.mira4j.network.inbound.packets.hazel.HostGamePacket;
 import com.sekwah.mira4j.network.outbound.packets.HostGame;
 import com.sekwah.mira4j.utils.GameCodes;
@@ -36,9 +37,12 @@ public class ClientListener implements PacketListener {
     }
     
     public void onReliablePacket(ReliablePacket packet) {
-        Mira4J.LOGGER.info("A 'Reliable' packet '{}' '{}'", packet.getNonce(), Arrays.toString(packet.getData()));
+        Mira4J.LOGGER.info("A 'Reliable' packet '{}' '{}'", packet.getNonce(), packet.getMessages());
         
-        ReliablePacketDecoder.decode(packet, this);
+        for(HazelMessage msg : packet.getMessages()) {
+            msg.forwardPacket(this);
+        }
+        
         AcknowledgePacket ack_packet = new AcknowledgePacket(packet.getNonce(), -1);
         manager.sendPacket(ack_packet);
     }

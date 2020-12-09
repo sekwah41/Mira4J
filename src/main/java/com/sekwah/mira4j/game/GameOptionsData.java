@@ -2,6 +2,7 @@ package com.sekwah.mira4j.game;
 
 import com.sekwah.mira4j.network.Packets.Maps;
 
+// Use gson maybe?
 public class GameOptionsData {
     public int version;
     public int maxPlayers = 10;

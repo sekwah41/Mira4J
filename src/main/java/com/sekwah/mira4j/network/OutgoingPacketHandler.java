@@ -18,12 +18,15 @@ public class OutgoingPacketHandler extends ChannelOutboundHandlerAdapter {
         packet.writeData(PacketBuf.wrap(buf));
         ctx.write(buf, promise);
         
+        
+        /*
         buf.markReaderIndex();
         final int readableBytes = buf.readableBytes();
         final byte[] packetBuffer = new byte[readableBytes];
         buf.readBytes(packetBuffer);
         buf.resetReaderIndex();
         
-        // Mira4J.LOGGER.info("Sending packet {} {}", type, Arrays.toString(packetBuffer));
+        Mira4J.LOGGER.info("Sending packet {} {}", type, Arrays.toString(packetBuffer));
+        */
     }
 }

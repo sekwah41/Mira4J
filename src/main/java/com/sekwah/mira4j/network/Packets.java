@@ -10,7 +10,7 @@ import com.sekwah.mira4j.network.inbound.packets.hazel.HostGamePacket;
 
 public class Packets {
     private static final Map<PacketType, Class<? extends Packet<?>>> packets;
-    private static final Map<MessageType, Class<? extends Packet<?>>> hazel_packets;
+    private static final Map<MessageType, Class<? extends HazelMessage>> hazel_packets;
     
     static {
         packets = new HashMap<>();
@@ -52,8 +52,8 @@ public class Packets {
         return null;
     }
     
-    public static Packet<?> getHazelPacket(MessageType type) {
-        Class<? extends Packet<?>> clazz = hazel_packets.get(type);
+    public static HazelMessage getHazelPacket(MessageType type) {
+        Class<? extends HazelMessage> clazz = hazel_packets.get(type);
         if(clazz == null) {
             Mira4J.LOGGER.error("Failed to create packet of type {}", type.toString());
             return null;
