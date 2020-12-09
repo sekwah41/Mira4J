@@ -10,8 +10,8 @@ public class OutgoingPacketHandler extends ChannelOutboundHandlerAdapter {
         if (!(msg instanceof Packet)) return;
         Packet<?> packet = (Packet<?>)msg;
         
-        ByteBuf buffer = ctx.alloc().ioBuffer();
-        packet.writeData(buffer);
-        ctx.write(buffer, promise);
+        ByteBuf buf = ctx.alloc().ioBuffer();
+        packet.writeData(PacketBuf.wrap(buf));
+        ctx.write(buf, promise);
     }
 }

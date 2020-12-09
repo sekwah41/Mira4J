@@ -5,14 +5,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.sekwah.mira4j.Mira4J;
-import com.sekwah.mira4j.network.inbound.packets.HelloPacket;
+import com.sekwah.mira4j.network.inbound.packets.*;
 
 public class Packets {
     private static final Map<PacketType, Class<? extends Packet<?>>> packets;
     
     static {
         packets = new HashMap<>();
+        packets.put(PacketType.UNRELIABLE, UnreliablePacket.class);
+        packets.put(PacketType.RELIABLE, ReliablePacket.class);
         packets.put(PacketType.HELLO, HelloPacket.class);
+        packets.put(PacketType.DISCONNECT, DisconnectPacket.class);
+        packets.put(PacketType.ACKNOWLEDGEMENT, AcknowledgePacket.class);
+        packets.put(PacketType.PING, KeepAlivePacket.class);
     }
     
     public static Packet<?> getPacketFromType(PacketType type) {
@@ -34,7 +39,7 @@ public class Packets {
     }
     
     public enum PacketType {
-        NORMAL(0x00),
+        UNRELIABLE(0x00),
         RELIABLE(0x01),
         HELLO(0x08),
         DISCONNECT(0x09),
@@ -84,5 +89,34 @@ public class Packets {
             return null;
         }
     }
-
+    
+    public enum MessageType {
+        HostingGame(0),
+        GameJoinDisconnect(1),
+        GameStarted(2),
+        PlayerLeft(4),
+        GameInfo(5),
+        GameInfoTo(6),
+        JoinedGame(7),
+        AlterGameInfo(10),
+        KickPlayer(11),
+        ChangeServer(13),
+        ServerList(14),
+        GameList(16)
+        ;
+        
+        final int id;
+        MessageType(int id) {
+            this.id = id;
+        }
+        
+        public static MessageType fromId(int id) {
+            for (MessageType type : values()) {
+                if (type.id == id) {
+                    return type;
+                }
+            }
+            return null;
+        }
+    }
 }

@@ -36,7 +36,7 @@ public class IncomingPacketHandler extends SimpleChannelInboundHandler<DatagramP
         
         Packet<?> packet = Packets.getPacketFromType(packetType);
         if (packet == null) return;
-        packet.readData(buf);
+        packet.readData(PacketBuf.wrap(buf));
         
         ctx.fireChannelRead(packet);
     }

@@ -3,7 +3,7 @@ package com.sekwah.mira4j.network.inbound.packets;
 import com.sekwah.mira4j.network.Packet;
 import com.sekwah.mira4j.network.PacketBuf;
 
-public class HelloPacket implements Packet<ClientListener> {
+public class ReliablePacket implements Packet<ClientListener> {
     private int ack_id;
     private byte[] data;
     
@@ -18,9 +18,9 @@ public class HelloPacket implements Packet<ClientListener> {
 
     @Override
     public void forwardPacket(ClientListener listener) {
-        listener.onHelloPacket(this);
+        listener.onReliablePacket(this);
     }
-
+    
     public int getAckId() {
         return ack_id;
     }

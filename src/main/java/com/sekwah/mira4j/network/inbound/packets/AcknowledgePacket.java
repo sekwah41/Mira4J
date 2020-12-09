@@ -3,14 +3,14 @@ package com.sekwah.mira4j.network.inbound.packets;
 import com.sekwah.mira4j.network.Packet;
 import com.sekwah.mira4j.network.PacketBuf;
 
-public class HelloPacket implements Packet<ClientListener> {
+public class AcknowledgePacket implements Packet<ClientListener> {
     private int ack_id;
-    private byte[] data;
+    private int ack_id_flags;
     
     @Override
     public void readData(PacketBuf reader) {
         ack_id = reader.readUnsignedShortBE();
-        data = reader.readBytes(reader.readableBytes());
+        ack_id_flags = reader.readUnsignedByte();
     }
 
     @Override
@@ -18,14 +18,14 @@ public class HelloPacket implements Packet<ClientListener> {
 
     @Override
     public void forwardPacket(ClientListener listener) {
-        listener.onHelloPacket(this);
+        listener.onAcknowledgePacket(this);
     }
-
+    
     public int getAckId() {
         return ack_id;
     }
     
-    public byte[] getData() {
-        return data;
+    public int getAckIdFlags() {
+        return ack_id_flags;
     }
 }
