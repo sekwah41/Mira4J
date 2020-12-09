@@ -3,29 +3,33 @@ package com.sekwah.mira4j.network.inbound.packets;
 import com.sekwah.mira4j.network.Packet;
 import com.sekwah.mira4j.network.PacketBuf;
 
-public class HelloPacket implements Packet<ClientListener> {
+public class PingPacket implements Packet<ClientListener> {
     private int nonce;
-    private byte[] data;
+    
+    public PingPacket() {
+        
+    }
+    
+    public PingPacket(int nonce) {
+        this.nonce = nonce;
+    }
     
     @Override
     public void readData(PacketBuf reader) {
         nonce = reader.readUnsignedShortBE();
-        data = reader.readBytes(reader.readableBytes());
     }
 
     @Override
-    public void writeData(PacketBuf writer) {}
+    public void writeData(PacketBuf writer) {
+        writer.writeShortBE(nonce);
+    }
 
     @Override
     public void forwardPacket(ClientListener listener) {
-        listener.onHelloPacket(this);
-    }
-
-    public int getNonce() {
-        return nonce;
+        listener.onKeepAlivePacket(this);
     }
     
-    public byte[] getData() {
-        return data;
+    public int getNonce() {
+        return nonce;
     }
 }

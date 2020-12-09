@@ -1,19 +1,22 @@
 package com.sekwah.mira4j.network;
 
+import java.net.InetSocketAddress;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import io.netty.channel.*;
+import io.netty.channel.socket.DatagramChannel;
 
 public class ConnectionManager extends SimpleChannelInboundHandler<Packet<?>> {
     
     private final Queue<Packet<?>> packetQueue = new ConcurrentLinkedQueue<>();
-    private Channel channel;
+    public DatagramChannel channel;
     private PacketListener listener;
+    private boolean hasRemote;
     
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        channel = ctx.channel();
+        channel = (DatagramChannel)ctx.channel();
     }
     
     @Override
@@ -36,12 +39,12 @@ public class ConnectionManager extends SimpleChannelInboundHandler<Packet<?>> {
         }
     }
     
-    public boolean hasChannel() {
-        return channel != null;
-    }
+//    public boolean hasChannel() {
+//        return channel != null;
+//    }
     
-    public boolean isConnected() {
-        return channel != null && channel.isOpen() && channel.isWritable();
+    public boolean hasClient() {
+        return channel != null && (!hasRemote || channel.isConnected()) && channel.isOpen();
     }
     
     public void tick() {
@@ -65,7 +68,7 @@ public class ConnectionManager extends SimpleChannelInboundHandler<Packet<?>> {
     }
     
     public void updateQueue() {
-        if (!isConnected()) return;
+        if (!hasClient()) return;
         
         synchronized (packetQueue) {
             Packet<?> packet = null;
@@ -83,7 +86,7 @@ public class ConnectionManager extends SimpleChannelInboundHandler<Packet<?>> {
     }
     
     public void sendPacket(Packet<?> packet) {
-        if (isConnected()) {
+        if (hasClient()) {
             updateQueue();
             sendPacketBack(packet);
         } else {
@@ -98,5 +101,13 @@ public class ConnectionManager extends SimpleChannelInboundHandler<Packet<?>> {
     public void disconnect() {
         
     }
-    
+
+    public void connect(InetSocketAddress addr) {
+        if(!hasRemote) {
+            hasRemote = true;
+            ChannelFuture channelfuture = this.channel.connect(addr);
+            channelfuture.addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
+        }
+    }
+
 }

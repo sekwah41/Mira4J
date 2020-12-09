@@ -1,5 +1,10 @@
 package com.sekwah.mira4j.network;
 
+import java.util.Arrays;
+
+import com.sekwah.mira4j.Mira4J;
+import com.sekwah.mira4j.network.Packets.PacketType;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
@@ -11,7 +16,17 @@ public class OutgoingPacketHandler extends ChannelOutboundHandlerAdapter {
         Packet<?> packet = (Packet<?>)msg;
         
         ByteBuf buf = ctx.alloc().ioBuffer();
+        PacketType type = Packets.getPacketType(packet.getClass());
+        buf.writeByte(type.getId());
         packet.writeData(PacketBuf.wrap(buf));
         ctx.write(buf, promise);
+        
+        buf.markReaderIndex();
+        final int readableBytes = buf.readableBytes();
+        final byte[] packetBuffer = new byte[readableBytes];
+        buf.readBytes(packetBuffer);
+        buf.resetReaderIndex();
+        
+        Mira4J.LOGGER.info("Sending packet {} {}", type, Arrays.toString(packetBuffer));
     }
 }

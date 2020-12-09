@@ -4,14 +4,15 @@ import static com.sekwah.mira4j.Mira4J.*;
 
 import java.util.*;
 
+import com.sekwah.mira4j.Mira4J;
 import com.sekwah.mira4j.config.ServerConfig;
 import com.sekwah.mira4j.network.inbound.packets.ClientListener;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.ChannelPipeline;
+import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.DatagramChannel;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 
 public class Server implements Runnable {
@@ -43,14 +44,14 @@ public class Server implements Runnable {
             final Bootstrap b = new Bootstrap();
             b.group(group).channel(NioDatagramChannel.class)
                     .option(ChannelOption.SO_BROADCAST, true)
-                    .handler(new ChannelInitializer<NioDatagramChannel>() {
+                    .handler(new ChannelInitializer<DatagramChannel>() {
                         @Override
-                        public void initChannel(final NioDatagramChannel ch) throws Exception {
+                        public void initChannel(final DatagramChannel ch) throws Exception {
                             ConnectionManager manager = new ConnectionManager();
                             
                             ChannelPipeline p = ch.pipeline();
                             p.addLast(
-                                new IncomingPacketHandler(),
+                                new IncomingPacketHandler(manager),
                                 new OutgoingPacketHandler()
                             );
                             
@@ -61,7 +62,7 @@ public class Server implements Runnable {
                     });
             
             LOGGER.info("waiting for message on {}:{}", address, port);
-            b.bind(address,port).sync().channel().closeFuture().await();
+            b.bind(address, port).sync().channel().closeFuture().await();
         } finally {
             LOGGER.info("Server Closing");
         }
@@ -72,7 +73,9 @@ public class Server implements Runnable {
             Iterator<ConnectionManager> iterator = managers.iterator();
             while(iterator.hasNext()) {
                 ConnectionManager manager = iterator.next();
-                if(manager.hasChannel() && manager.isConnected()) {
+                
+                // Mira4J.LOGGER.info("hasClient: {} {}", manager, manager.hasClient());
+                if(manager.hasClient()) {
                     try {
                         manager.tick();
                     } catch(Exception e) {

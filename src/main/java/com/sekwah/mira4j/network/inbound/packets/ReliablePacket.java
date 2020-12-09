@@ -4,12 +4,12 @@ import com.sekwah.mira4j.network.Packet;
 import com.sekwah.mira4j.network.PacketBuf;
 
 public class ReliablePacket implements Packet<ClientListener> {
-    private int ack_id;
+    private int nonce;
     private byte[] data;
     
     @Override
     public void readData(PacketBuf reader) {
-        ack_id = reader.readUnsignedShortBE();
+        nonce = reader.readUnsignedShortBE();
         data = reader.readBytes(reader.readableBytes());
     }
 
@@ -21,8 +21,8 @@ public class ReliablePacket implements Packet<ClientListener> {
         listener.onReliablePacket(this);
     }
     
-    public int getAckId() {
-        return ack_id;
+    public int getNonce() {
+        return nonce;
     }
     
     public byte[] getData() {

@@ -11,13 +11,16 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.DatagramPacket;
 
 public class IncomingPacketHandler extends SimpleChannelInboundHandler<DatagramPacket> {
-    public IncomingPacketHandler() {
+    private final ConnectionManager manager;
+    
+    public IncomingPacketHandler(ConnectionManager manager) {
+        this.manager = manager;
     }
     
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, DatagramPacket msg) throws Exception {
         ByteBuf buf = msg.content();
-        // final InetAddress srcAddr = packet.sender().getAddress();
+        manager.connect(msg.sender());
         
         buf.markReaderIndex();
         final int readableBytes = buf.readableBytes();

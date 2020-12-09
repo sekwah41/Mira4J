@@ -3,6 +3,7 @@ package com.sekwah.mira4j.network;
 import java.nio.charset.StandardCharsets;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 public class PacketBuf {
     private ByteBuf buffer;
@@ -32,6 +33,10 @@ public class PacketBuf {
     
     public int readableBytes() {
         return buffer.readableBytes();
+    }
+    
+    public void release() {
+        buffer.release();
     }
     
     public boolean readBoolean() {
@@ -67,7 +72,7 @@ public class PacketBuf {
     }
     
     public int readUnsignedShortBE() {
-        return buffer.readUnsignedShortLE();
+        return buffer.readUnsignedShort();
     }
     
     public long readUnsignedInt() {
@@ -196,5 +201,9 @@ public class PacketBuf {
     
     public static PacketBuf wrap(ByteBuf buffer) {
         return new PacketBuf(buffer);
+    }
+    
+    public static PacketBuf wrap(byte[] bytes) {
+        return new PacketBuf(Unpooled.wrappedBuffer(bytes));
     }
 }

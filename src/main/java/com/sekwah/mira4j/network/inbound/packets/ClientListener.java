@@ -4,8 +4,8 @@ import java.util.Arrays;
 
 import com.sekwah.mira4j.Mira4J;
 import com.sekwah.mira4j.network.ConnectionManager;
+import com.sekwah.mira4j.network.PacketBuf;
 import com.sekwah.mira4j.network.PacketListener;
-import com.sekwah.mira4j.network.Packets.MessageType;
 
 public class ClientListener implements PacketListener {
     private final ConnectionManager manager;
@@ -15,7 +15,19 @@ public class ClientListener implements PacketListener {
     }
     
     public void onHelloPacket(HelloPacket packet) {
-        Mira4J.LOGGER.info("A 'Hello' packet '{}' '{}'", packet.getAckId(), Arrays.toString(packet.getData()));
+        Mira4J.LOGGER.info("A 'Hello' packet '{}' '{}'", packet.getNonce(), Arrays.toString(packet.getData()));
+        // This will probably be the Connecting packet
+        PacketBuf buffer = PacketBuf.wrap(packet.getData());
+        
+        /* int reserved =  buffer.readUnsignedByte(); */ buffer.skipBytes(1);
+        long version = buffer.readUnsignedInt();
+        String username = buffer.readString();
+        Mira4J.LOGGER.info("Hello: version='{}' username='{}'", String.format("%08x", version), username);
+        buffer.release();
+        
+        
+        AcknowledgePacket ack_packet = new AcknowledgePacket(packet.getNonce(), packet.getNonce() - 1);
+        manager.sendPacket(ack_packet);
     }
     
     public void onDisconnectPacket(DisconnectPacket packet) {
@@ -23,18 +35,21 @@ public class ClientListener implements PacketListener {
     }
     
     public void onReliablePacket(ReliablePacket packet) {
-        Mira4J.LOGGER.info("A 'Reliable' packet '{}' '{}'", packet.getAckId(), Arrays.toString(packet.getData()));
+        Mira4J.LOGGER.info("A 'Reliable' packet '{}' '{}'", packet.getNonce(), Arrays.toString(packet.getData()));
     }
     
-    public void onUnreliablePacket(UnreliablePacket packet) {
-        Mira4J.LOGGER.info("A 'Unreliable' packet '{}'", Arrays.toString(packet.getData()));
+    public void onNormalPacket(NormalPacket packet) {
+        Mira4J.LOGGER.info("A 'Normal' packet '{}'", Arrays.toString(packet.getData()));
     }
     
     public void onAcknowledgePacket(AcknowledgePacket packet) {
-        Mira4J.LOGGER.info("An 'Acknowledge' packet '{}' '{}'", packet.getAckId(), packet.getAckIdFlags());
+        Mira4J.LOGGER.info("A 'Acknowledge' packet '{}' '{}'", packet.getNonce(), packet.getMissingPackets());
     }
     
-    public void onKeepAlivePacket(KeepAlivePacket packet) {
-        Mira4J.LOGGER.info("A 'KeepAlive' packet '{}'", packet.getAckId());
+    public void onKeepAlivePacket(PingPacket packet) {
+        Mira4J.LOGGER.info("A 'KeepAlive' packet '{}'", packet.getNonce());
+        
+        AcknowledgePacket ack_packet = new AcknowledgePacket(packet.getNonce(), -1);
+        manager.sendPacket(ack_packet);
     }
 }

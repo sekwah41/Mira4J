@@ -4,28 +4,40 @@ import com.sekwah.mira4j.network.Packet;
 import com.sekwah.mira4j.network.PacketBuf;
 
 public class AcknowledgePacket implements Packet<ClientListener> {
-    private int ack_id;
-    private int ack_id_flags;
+    private int nonce;
+    private int missing_packets;
+    
+    public AcknowledgePacket() {
+        
+    }
+    
+    public AcknowledgePacket(int nonce, int missing_packets) {
+        this.nonce = nonce;
+        this.missing_packets = missing_packets;
+    }
     
     @Override
     public void readData(PacketBuf reader) {
-        ack_id = reader.readUnsignedShortBE();
-        ack_id_flags = reader.readUnsignedByte();
+        nonce = reader.readUnsignedShortBE();
+        missing_packets = reader.readUnsignedByte();
     }
 
     @Override
-    public void writeData(PacketBuf writer) {}
+    public void writeData(PacketBuf writer) {
+        writer.writeShortBE(nonce);
+        writer.writeByte(missing_packets);
+    }
 
     @Override
     public void forwardPacket(ClientListener listener) {
         listener.onAcknowledgePacket(this);
     }
     
-    public int getAckId() {
-        return ack_id;
+    public int getNonce() {
+        return nonce;
     }
     
-    public int getAckIdFlags() {
-        return ack_id_flags;
+    public int getMissingPackets() {
+        return missing_packets;
     }
 }

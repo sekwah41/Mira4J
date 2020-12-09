@@ -12,12 +12,12 @@ public class Packets {
     
     static {
         packets = new HashMap<>();
-        packets.put(PacketType.UNRELIABLE, UnreliablePacket.class);
+        packets.put(PacketType.NORMAL, NormalPacket.class);
         packets.put(PacketType.RELIABLE, ReliablePacket.class);
         packets.put(PacketType.HELLO, HelloPacket.class);
         packets.put(PacketType.DISCONNECT, DisconnectPacket.class);
         packets.put(PacketType.ACKNOWLEDGEMENT, AcknowledgePacket.class);
-        packets.put(PacketType.PING, KeepAlivePacket.class);
+        packets.put(PacketType.PING, PingPacket.class);
     }
     
     public static Packet<?> getPacketFromType(PacketType type) {
@@ -38,8 +38,16 @@ public class Packets {
         return null;
     }
     
+    public static PacketType getPacketType(Class<?> clazz) {
+        for(PacketType key : packets.keySet()) {
+            Class<? extends Packet<?>> item = packets.get(key);
+            if(item.equals(clazz)) return key;
+        }
+        return null;
+    }
+    
     public enum PacketType {
-        UNRELIABLE(0x00),
+        NORMAL(0x00),
         RELIABLE(0x01),
         HELLO(0x08),
         DISCONNECT(0x09),

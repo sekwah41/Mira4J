@@ -3,7 +3,7 @@ package com.sekwah.mira4j.network.inbound.packets;
 import com.sekwah.mira4j.network.Packet;
 import com.sekwah.mira4j.network.PacketBuf;
 
-public class UnreliablePacket implements Packet<ClientListener> {
+public class NormalPacket implements Packet<ClientListener> {
     private byte[] data;
     
     @Override
@@ -16,7 +16,7 @@ public class UnreliablePacket implements Packet<ClientListener> {
 
     @Override
     public void forwardPacket(ClientListener listener) {
-        listener.onUnreliablePacket(this);
+        listener.onNormalPacket(this);
     }
     
     public byte[] getData() {
