@@ -7,3 +7,5 @@ out/
 
 # Ignore Gradle build output directory
 build
+/.classpath
+/.project
