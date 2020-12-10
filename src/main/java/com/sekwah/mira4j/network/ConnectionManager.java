@@ -100,6 +100,8 @@ public class ConnectionManager extends SimpleChannelInboundHandler<Packet<?>> {
 
     public void disconnect() {
         hasRemote = false;
+        if(this.channel == null) return;
+        
         ChannelFuture channelfuture = this.channel.disconnect();
         channelfuture.addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
     }
