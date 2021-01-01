@@ -1,10 +1,10 @@
-package com.sekwah.mira4j.network.packets.outbound;
+package com.sekwah.mira4j.network.packets.client;
 
 import com.sekwah.mira4j.network.PacketBuf;
-import com.sekwah.mira4j.network.Packets.MessageType;
-import com.sekwah.mira4j.network.packets.inbound.HazelMessage;
+import com.sekwah.mira4j.network.data.MessageType;
+import com.sekwah.mira4j.network.packets.server.SHazelMessage;
 
-public class HostGame extends HazelMessage {
+public class HostGame extends SHazelMessage {
     private int gameId;
 
     public HostGame(int gameId) {

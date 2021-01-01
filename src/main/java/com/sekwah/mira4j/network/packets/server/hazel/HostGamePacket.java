@@ -1,11 +1,11 @@
-package com.sekwah.mira4j.network.packets.inbound.hazel;
+package com.sekwah.mira4j.network.packets.server.hazel;
 
 import com.sekwah.mira4j.game.GameOptionsData;
 import com.sekwah.mira4j.network.PacketBuf;
-import com.sekwah.mira4j.network.packets.inbound.ClientListener;
-import com.sekwah.mira4j.network.packets.inbound.HazelMessage;
+import com.sekwah.mira4j.network.packets.server.SClientListener;
+import com.sekwah.mira4j.network.packets.server.SHazelMessage;
 
-public class HostGamePacket extends HazelMessage {
+public class HostGamePacket extends SHazelMessage {
     private GameOptionsData data;
 
     public HostGamePacket() {
@@ -27,7 +27,7 @@ public class HostGamePacket extends HazelMessage {
     }
 
     @Override
-    public void forwardPacket(ClientListener listener) {
+    public void forwardPacket(SClientListener listener) {
         listener.onHostGamePacket(this);
     }
 

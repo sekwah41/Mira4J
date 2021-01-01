@@ -1,9 +1,9 @@
-package com.sekwah.mira4j.network.packets.inbound;
+package com.sekwah.mira4j.network.packets.server;
 
 import com.sekwah.mira4j.network.Packet;
 import com.sekwah.mira4j.network.PacketBuf;
 
-public class DisconnectPacket implements Packet<ClientListener> {
+public class SDisconnectPacket implements Packet<SClientListener> {
     @Override
     public void readData(PacketBuf reader) {}
 
@@ -11,7 +11,7 @@ public class DisconnectPacket implements Packet<ClientListener> {
     public void writeData(PacketBuf writer) {}
 
     @Override
-    public void forwardPacket(ClientListener listener) {
+    public void forwardPacket(SClientListener listener) {
         listener.onDisconnectPacket(this);
     }
 }

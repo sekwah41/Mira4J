@@ -1,21 +1,21 @@
-package com.sekwah.mira4j.network.packets.inbound;
+package com.sekwah.mira4j.network.packets.server;
 
 import java.util.Arrays;
 
 import com.sekwah.mira4j.Mira4J;
 import com.sekwah.mira4j.network.*;
-import com.sekwah.mira4j.network.packets.inbound.hazel.HostGamePacket;
-import com.sekwah.mira4j.network.packets.outbound.HostGame;
+import com.sekwah.mira4j.network.packets.server.hazel.HostGamePacket;
+import com.sekwah.mira4j.network.packets.client.HostGame;
 import com.sekwah.mira4j.utils.GameUtils;
 
-public class ClientListener implements PacketListener {
+public class SClientListener implements PacketListener {
     private final ConnectionManager manager;
 
-    public ClientListener(ConnectionManager manager) {
+    public SClientListener(ConnectionManager manager) {
         this.manager = manager;
     }
 
-    public void onHelloPacket(HelloPacket packet) {
+    public void onHelloPacket(SHelloPacket packet) {
         Mira4J.LOGGER.info("A 'Hello' packet '{}' '{}'", packet.getNonce(), Arrays.toString(packet.getData()));
         // This will probably be the Connecting packet
         PacketBuf buffer = PacketBuf.wrap(packet.getData());
@@ -27,39 +27,39 @@ public class ClientListener implements PacketListener {
         buffer.release();
 
 
-        AcknowledgePacket ack_packet = new AcknowledgePacket(packet.getNonce(), packet.getNonce() - 1);
+        SAcknowledgePacket ack_packet = new SAcknowledgePacket(packet.getNonce(), packet.getNonce() - 1);
         manager.sendPacket(ack_packet);
     }
 
-    public void onDisconnectPacket(DisconnectPacket packet) {
+    public void onDisconnectPacket(SDisconnectPacket packet) {
         Mira4J.LOGGER.info("A 'Disconnect' packet");
 
         manager.disconnect();
     }
 
-    public void onReliablePacket(ReliablePacket packet) {
+    public void onReliablePacket(SReliablePacket packet) {
         Mira4J.LOGGER.info("A 'Reliable' packet '{}' '{}'", packet.getNonce(), packet.getMessages());
 
-        for(HazelMessage msg : packet.getMessages()) {
+        for(SHazelMessage msg : packet.getMessages()) {
             msg.forwardPacket(this);
         }
 
-        AcknowledgePacket ack_packet = new AcknowledgePacket(packet.getNonce(), -1);
+        SAcknowledgePacket ack_packet = new SAcknowledgePacket(packet.getNonce(), -1);
         manager.sendPacket(ack_packet);
     }
 
-    public void onNormalPacket(NormalPacket packet) {
+    public void onNormalPacket(SNormalPacket packet) {
         Mira4J.LOGGER.info("A 'Normal' packet '{}'", Arrays.toString(packet.getData()));
     }
 
-    public void onAcknowledgePacket(AcknowledgePacket packet) {
+    public void onAcknowledgePacket(SAcknowledgePacket packet) {
         // Mira4J.LOGGER.info("A 'Acknowledge' packet '{}' '{}'", packet.getNonce(), packet.getMissingPackets());
     }
 
-    public void onKeepAlivePacket(PingPacket packet) {
+    public void onKeepAlivePacket(SPingPacket packet) {
         // Mira4J.LOGGER.info("A 'KeepAlive' packet '{}'", packet.getNonce());
 
-        AcknowledgePacket ack_packet = new AcknowledgePacket(packet.getNonce(), -1);
+        SAcknowledgePacket ack_packet = new SAcknowledgePacket(packet.getNonce(), -1);
         manager.sendPacket(ack_packet);
     }
 
@@ -68,7 +68,7 @@ public class ClientListener implements PacketListener {
     public void onHostGamePacket(HostGamePacket packet) {
         Mira4J.LOGGER.info("A 'HostGamePacket' packet data='{}'", packet.getGameOptionsData());
 
-        ReliablePacket send = new ReliablePacket(1, new HostGame(GameUtils.codeToInt("SEKWAH")));
+        SReliablePacket send = new SReliablePacket(1, new HostGame(GameUtils.codeToInt("SEKWAH")));
         manager.sendPacket(send);
     }
 }

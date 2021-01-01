@@ -1,4 +1,4 @@
-package com.sekwah.mira4j.network.packets.inbound;
+package com.sekwah.mira4j.network.packets.server;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,19 +7,19 @@ import com.sekwah.mira4j.network.Packet;
 import com.sekwah.mira4j.network.PacketBuf;
 import com.sekwah.mira4j.network.decoder.HazelDecoder;
 
-public class ReliablePacket implements Packet<ClientListener> {
+public class SReliablePacket implements Packet<SClientListener> {
     private int nonce;
-    private List<HazelMessage> messages;
+    private List<SHazelMessage> messages;
 
-    public ReliablePacket() {
+    public SReliablePacket() {
 
     }
 
-    public ReliablePacket(int nonce, HazelMessage... args) {
+    public SReliablePacket(int nonce, SHazelMessage... args) {
         this.nonce = nonce;
         messages = new ArrayList<>();
 
-        for(HazelMessage msg : args) {
+        for(SHazelMessage msg : args) {
             messages.add(msg);
         }
     }
@@ -33,7 +33,7 @@ public class ReliablePacket implements Packet<ClientListener> {
         messages = new ArrayList<>();
         int max_tries = 10;
         while(wrap.readableBytes() > 0 && (max_tries-- > 0)) {
-            HazelMessage msg = HazelDecoder.decode(wrap);
+            SHazelMessage msg = HazelDecoder.decode(wrap);
             if(msg == null) continue;
             messages.add(msg);
         }
@@ -42,13 +42,13 @@ public class ReliablePacket implements Packet<ClientListener> {
     @Override
     public void writeData(PacketBuf writer) {
         writer.writeUnsignedShortBE(nonce);
-        for(HazelMessage msg : messages) {
+        for(SHazelMessage msg : messages) {
             msg.writeData(writer);
         }
     }
 
     @Override
-    public void forwardPacket(ClientListener listener) {
+    public void forwardPacket(SClientListener listener) {
         listener.onReliablePacket(this);
     }
 
@@ -56,7 +56,7 @@ public class ReliablePacket implements Packet<ClientListener> {
         return nonce;
     }
 
-    public List<HazelMessage> getMessages() {
+    public List<SHazelMessage> getMessages() {
         return messages;
     }
 }

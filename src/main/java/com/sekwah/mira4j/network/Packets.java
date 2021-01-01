@@ -5,21 +5,23 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.sekwah.mira4j.Mira4J;
-import com.sekwah.mira4j.network.packets.inbound.*;
-import com.sekwah.mira4j.network.packets.inbound.hazel.HostGamePacket;
+import com.sekwah.mira4j.network.data.MessageType;
+import com.sekwah.mira4j.network.data.PacketType;
+import com.sekwah.mira4j.network.packets.server.*;
+import com.sekwah.mira4j.network.packets.server.hazel.HostGamePacket;
 
 public class Packets {
     private static final Map<PacketType, Class<? extends Packet<?>>> packets;
-    private static final Map<MessageType, Class<? extends HazelMessage>> hazel_packets;
+    private static final Map<MessageType, Class<? extends SHazelMessage>> hazel_packets;
 
     static {
         packets = new HashMap<>();
-        packets.put(PacketType.NORMAL, NormalPacket.class);
-        packets.put(PacketType.RELIABLE, ReliablePacket.class);
-        packets.put(PacketType.HELLO, HelloPacket.class);
-        packets.put(PacketType.DISCONNECT, DisconnectPacket.class);
-        packets.put(PacketType.ACKNOWLEDGEMENT, AcknowledgePacket.class);
-        packets.put(PacketType.PING, PingPacket.class);
+        packets.put(PacketType.NORMAL, SNormalPacket.class);
+        packets.put(PacketType.RELIABLE, SReliablePacket.class);
+        packets.put(PacketType.HELLO, SHelloPacket.class);
+        packets.put(PacketType.DISCONNECT, SDisconnectPacket.class);
+        packets.put(PacketType.ACKNOWLEDGEMENT, SAcknowledgePacket.class);
+        packets.put(PacketType.PING, SPingPacket.class);
 
 
         hazel_packets = new HashMap<>();
@@ -52,8 +54,8 @@ public class Packets {
         return null;
     }
 
-    public static HazelMessage getHazelPacket(MessageType type) {
-        Class<? extends HazelMessage> clazz = hazel_packets.get(type);
+    public static SHazelMessage getHazelPacket(MessageType type) {
+        Class<? extends SHazelMessage> clazz = hazel_packets.get(type);
         if(clazz == null) {
             Mira4J.LOGGER.error("Failed to create packet of type {}", type.toString());
             return null;
@@ -70,95 +72,4 @@ public class Packets {
         return null;
     }
 
-    public enum PacketType {
-        NORMAL(0x00),
-        RELIABLE(0x01),
-        HELLO(0x08),
-        DISCONNECT(0x09),
-        ACKNOWLEDGEMENT(0x0a),
-        FRAGMENT(0x0b),
-        PING(0x0c);
-
-        private int id;
-
-        PacketType(int id) {
-            this.id = id;
-        }
-
-        public int getId() {
-            return id;
-        }
-
-        public static PacketType fromId(int id) {
-            for (PacketType type : values()) {
-                if (type.getId() == id) {
-                    return type;
-                }
-            }
-            return null;
-        }
-    }
-
-    public enum Maps {
-        THE_SKELD(0),
-        MIRA_HQ(1),
-        POLUS(2);
-
-        private int id;
-
-        Maps(int id) {
-            this.id = id;
-        }
-
-        public int getId() {
-            return id;
-        }
-
-        public static Maps fromId(int id) {
-            for (Maps type : values()) {
-                if (type.getId() == id) {
-                    return type;
-                }
-            }
-            return null;
-        }
-    }
-
-    public enum MessageType {
-        HostGame(0),
-        JoinGame(1),
-        StartGame(2),
-        RemoveGame(3),
-        RemovePlayer(4),
-        GameData(5),
-        GameDataTo(6),
-        JoinedGame(7),
-        EndGame(8),
-        GetGameList(9),
-        AlterGame(10),
-        KickPlayer(11),
-        WaitForHost(12),
-        Redirect(13),
-        ReselectServer(14),
-        GetGameListV2(16)
-        ;
-
-        final int id;
-        MessageType(int id) {
-            this.id = id;
-        }
-
-        public int getId() {
-            return id;
-        }
-
-        public static MessageType fromId(int id) {
-            for (MessageType type : values()) {
-                if (type.id == id) {
-                    return type;
-                }
-            }
-            return null;
-        }
-    }
 }

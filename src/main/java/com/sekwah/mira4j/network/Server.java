@@ -5,7 +5,7 @@ import static com.sekwah.mira4j.Mira4J.*;
 import java.util.*;
 
 import com.sekwah.mira4j.config.ServerConfig;
-import com.sekwah.mira4j.network.packets.inbound.ClientListener;
+import com.sekwah.mira4j.network.packets.server.SClientListener;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
@@ -54,7 +54,7 @@ public class Server implements Runnable {
                             );
 
                             managers.add(manager);
-                            manager.setPacketListener(new ClientListener(manager));
+                            manager.setPacketListener(new SClientListener(manager));
                             p.addLast(manager);
                         }
                     });

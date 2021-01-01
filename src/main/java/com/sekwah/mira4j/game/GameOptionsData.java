@@ -1,6 +1,6 @@
 package com.sekwah.mira4j.game;
 
-import com.sekwah.mira4j.network.Packets.Maps;
+import com.sekwah.mira4j.network.data.Maps;
 
 // Use gson maybe?
 public class GameOptionsData {

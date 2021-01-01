@@ -1,17 +1,17 @@
-package com.sekwah.mira4j.network.packets.inbound;
+package com.sekwah.mira4j.network.packets.server;
 
 import com.sekwah.mira4j.network.Packet;
 import com.sekwah.mira4j.network.PacketBuf;
 
-public class AcknowledgePacket implements Packet<ClientListener> {
+public class SAcknowledgePacket implements Packet<SClientListener> {
     private int nonce;
     private int missing_packets;
 
-    public AcknowledgePacket() {
+    public SAcknowledgePacket() {
 
     }
 
-    public AcknowledgePacket(int nonce, int missing_packets) {
+    public SAcknowledgePacket(int nonce, int missing_packets) {
         this.nonce = nonce;
         this.missing_packets = missing_packets;
     }
@@ -29,7 +29,7 @@ public class AcknowledgePacket implements Packet<ClientListener> {
     }
 
     @Override
-    public void forwardPacket(ClientListener listener) {
+    public void forwardPacket(SClientListener listener) {
         listener.onAcknowledgePacket(this);
     }
 

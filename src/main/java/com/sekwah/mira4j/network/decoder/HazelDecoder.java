@@ -2,15 +2,15 @@ package com.sekwah.mira4j.network.decoder;
 
 import com.sekwah.mira4j.network.PacketBuf;
 import com.sekwah.mira4j.network.Packets;
-import com.sekwah.mira4j.network.Packets.MessageType;
-import com.sekwah.mira4j.network.packets.inbound.HazelMessage;
+import com.sekwah.mira4j.network.data.MessageType;
+import com.sekwah.mira4j.network.packets.server.SHazelMessage;
 
 public class HazelDecoder {
-    public static HazelMessage decode(PacketBuf reader) {
+    public static SHazelMessage decode(PacketBuf reader) {
         int length = reader.readUnsignedShort();
         int type = reader.readUnsignedByte();
 
-        HazelMessage packet = Packets.getHazelPacket(MessageType.fromId(type));
+        SHazelMessage packet = Packets.getHazelPacket(MessageType.fromId(type));
         if(packet == null) {
             reader.skipBytes(length);
             return null;
