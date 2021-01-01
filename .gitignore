@@ -9,3 +9,5 @@ out/
 build
 /.classpath
 /.project
+
+serversettings.json

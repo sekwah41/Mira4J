@@ -8,7 +8,7 @@ import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
 
 public class OutgoingPacketHandler extends ChannelOutboundHandlerAdapter {
-    public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
+    public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) {
         if (!(msg instanceof Packet)) return;
         Packet<?> packet = (Packet<?>)msg;
 
@@ -17,16 +17,5 @@ public class OutgoingPacketHandler extends ChannelOutboundHandlerAdapter {
         buf.writeByte(type.getId());
         packet.writeData(PacketBuf.wrap(buf));
         ctx.write(buf, promise);
-
-
-        /*
-        buf.markReaderIndex();
-        final int readableBytes = buf.readableBytes();
-        final byte[] packetBuffer = new byte[readableBytes];
-        buf.readBytes(packetBuffer);
-        buf.resetReaderIndex();
-
-        Mira4J.LOGGER.info("Sending packet {} {}", type, Arrays.toString(packetBuffer));
-        */
     }
 }

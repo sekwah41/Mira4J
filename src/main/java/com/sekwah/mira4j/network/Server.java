@@ -2,6 +2,7 @@ package com.sekwah.mira4j.network;
 
 import static com.sekwah.mira4j.Mira4J.*;
 
+import java.net.BindException;
 import java.util.*;
 
 import com.sekwah.mira4j.config.ServerConfig;
@@ -33,7 +34,7 @@ public class Server implements Runnable {
         this.port = serverConfig.port;
     }
 
-    public void start() throws Exception {
+    public void start() throws InterruptedException, BindException {
         final NioEventLoopGroup group = new NioEventLoopGroup();
         try {
             tickThread.setDaemon(true); // tell the vm not to wait for this thread to close
