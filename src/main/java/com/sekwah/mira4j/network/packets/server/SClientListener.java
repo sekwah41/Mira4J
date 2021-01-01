@@ -5,7 +5,7 @@ import java.util.Arrays;
 import com.sekwah.mira4j.Mira4J;
 import com.sekwah.mira4j.network.*;
 import com.sekwah.mira4j.network.packets.server.hazel.HostGamePacket;
-import com.sekwah.mira4j.network.packets.client.HostGame;
+import com.sekwah.mira4j.network.packets.client.CHostGamePacket;
 import com.sekwah.mira4j.utils.GameUtils;
 
 public class SClientListener implements PacketListener {
@@ -68,7 +68,7 @@ public class SClientListener implements PacketListener {
     public void onHostGamePacket(HostGamePacket packet) {
         Mira4J.LOGGER.info("A 'HostGamePacket' packet data='{}'", packet.getGameOptionsData());
 
-        SReliablePacket send = new SReliablePacket(1, new HostGame(GameUtils.codeToInt("SEKWAH")));
+        SReliablePacket send = new SReliablePacket(1, new CHostGamePacket(GameUtils.codeToInt("SEKWAH")));
         manager.sendPacket(send);
     }
 }

@@ -14,16 +14,15 @@ public class Mira4J {
     private final DataStorage dataStorage;
     private final Server server;
 
-    private final String SERVER_SETTINGS_LOC = "serversettings.json";
-
     public static final Logger LOGGER = LogManager.getLogger("Mira4J");
 
     public Mira4J() {
         dataStorage = new DataStorage(new File("./"));
 
-        ServerConfig serverConfig = dataStorage.loadJson(ServerConfig.class, SERVER_SETTINGS_LOC);
+        String serverSettingsLoc = "ServerSettings.json";
+        ServerConfig serverConfig = dataStorage.loadJson(ServerConfig.class, serverSettingsLoc);
 
-        dataStorage.storeJson(serverConfig, SERVER_SETTINGS_LOC);
+        dataStorage.storeJson(serverConfig, serverSettingsLoc);
 
         server = new Server(serverConfig);
 
@@ -35,9 +34,10 @@ public class Mira4J {
             LOGGER.error("Server crashed");
             e.printStackTrace();
             System.exit(-1);
-        } finally {
-            System.exit(0);
         }
+
+        // Just to force the threads to close :P Don't wanna make a mistake and leave background threads open.
+        System.exit(0);
     }
 
 }
