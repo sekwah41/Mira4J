@@ -1,4 +1,4 @@
-package com.sekwah.mira4j.config;
+package com.sekwah.mira4j.network.data;
 
 public interface GameKeywords {
     int ALL = 0;

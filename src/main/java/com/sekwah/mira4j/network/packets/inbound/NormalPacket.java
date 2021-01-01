@@ -1,11 +1,11 @@
-package com.sekwah.mira4j.network.inbound.packets;
+package com.sekwah.mira4j.network.packets.inbound;
 
 import com.sekwah.mira4j.network.Packet;
 import com.sekwah.mira4j.network.PacketBuf;
 
 public class NormalPacket implements Packet<ClientListener> {
     private byte[] data;
-    
+
     @Override
     public void readData(PacketBuf reader) {
         data = reader.readBytes(reader.readableBytes());
@@ -18,7 +18,7 @@ public class NormalPacket implements Packet<ClientListener> {
     public void forwardPacket(ClientListener listener) {
         listener.onNormalPacket(this);
     }
-    
+
     public byte[] getData() {
         return data;
     }

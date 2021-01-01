@@ -5,13 +5,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.sekwah.mira4j.Mira4J;
-import com.sekwah.mira4j.network.inbound.packets.*;
-import com.sekwah.mira4j.network.inbound.packets.hazel.HostGamePacket;
+import com.sekwah.mira4j.network.packets.inbound.*;
+import com.sekwah.mira4j.network.packets.inbound.hazel.HostGamePacket;
 
 public class Packets {
     private static final Map<PacketType, Class<? extends Packet<?>>> packets;
     private static final Map<MessageType, Class<? extends HazelMessage>> hazel_packets;
-    
+
     static {
         packets = new HashMap<>();
         packets.put(PacketType.NORMAL, NormalPacket.class);
@@ -20,19 +20,19 @@ public class Packets {
         packets.put(PacketType.DISCONNECT, DisconnectPacket.class);
         packets.put(PacketType.ACKNOWLEDGEMENT, AcknowledgePacket.class);
         packets.put(PacketType.PING, PingPacket.class);
-        
+
 
         hazel_packets = new HashMap<>();
         hazel_packets.put(MessageType.HostGame, HostGamePacket.class);
     }
-    
+
     public static Packet<?> getPacketFromType(PacketType type) {
         Class<? extends Packet<?>> clazz = packets.get(type);
         if(clazz == null) {
             Mira4J.LOGGER.error("Failed to create packet of type {}", type.toString());
             return null;
         }
-        
+
         try {
             return clazz.getConstructor().newInstance();
         } catch(InstantiationException | IllegalAccessException | IllegalArgumentException
@@ -40,10 +40,10 @@ public class Packets {
             Mira4J.LOGGER.error("Failed to create packet of type {}", type.toString());
             e.printStackTrace();
         }
-        
+
         return null;
     }
-    
+
     public static PacketType getPacketType(Class<?> clazz) {
         for(PacketType key : packets.keySet()) {
             Class<? extends Packet<?>> item = packets.get(key);
@@ -51,14 +51,14 @@ public class Packets {
         }
         return null;
     }
-    
+
     public static HazelMessage getHazelPacket(MessageType type) {
         Class<? extends HazelMessage> clazz = hazel_packets.get(type);
         if(clazz == null) {
             Mira4J.LOGGER.error("Failed to create packet of type {}", type.toString());
             return null;
         }
-        
+
         try {
             return clazz.getConstructor().newInstance();
         } catch(InstantiationException | IllegalAccessException | IllegalArgumentException
@@ -66,10 +66,10 @@ public class Packets {
             Mira4J.LOGGER.error("Failed to create packet of type {}", type.toString());
             e.printStackTrace();
         }
-        
+
         return null;
     }
-    
+
     public enum PacketType {
         NORMAL(0x00),
         RELIABLE(0x01),
@@ -123,7 +123,7 @@ public class Packets {
             return null;
         }
     }
-    
+
     public enum MessageType {
         HostGame(0),
         JoinGame(1),
@@ -142,16 +142,16 @@ public class Packets {
         ReselectServer(14),
         GetGameListV2(16)
         ;
-        
+
         final int id;
         MessageType(int id) {
             this.id = id;
         }
-        
+
         public int getId() {
             return id;
         }
-        
+
         public static MessageType fromId(int id) {
             for (MessageType type : values()) {
                 if (type.id == id) {

@@ -1,4 +1,4 @@
-package com.sekwah.mira4j.network.inbound.packets;
+package com.sekwah.mira4j.network.packets.inbound;
 
 import com.sekwah.mira4j.network.Packet;
 import com.sekwah.mira4j.network.PacketBuf;

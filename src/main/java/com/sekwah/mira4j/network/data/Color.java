@@ -1,6 +1,7 @@
-package com.sekwah.mira4j.config;
+package com.sekwah.mira4j.network.data;
 
 public enum Color {
+
     RED(0),
     BLUE(1),
     GREEN(2),
@@ -12,13 +13,14 @@ public enum Color {
     PURPLE(8),
     BROWN(9),
     CYAN(10),
-    LIGHT_GREEN(11);
-    
+    LIGHT_GREEN(11)
+    ;
+
     final int id;
     private Color(int id) {
         this.id = id;
     }
-    
+
     public int getId() {
         return id;
     }
@@ -29,7 +31,7 @@ public enum Color {
                 return color;
             }
         }
-        
+
         return null;
     }
 }

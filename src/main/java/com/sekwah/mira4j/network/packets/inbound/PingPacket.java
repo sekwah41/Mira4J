@@ -1,31 +1,35 @@
-package com.sekwah.mira4j.network.inbound.packets;
+package com.sekwah.mira4j.network.packets.inbound;
 
 import com.sekwah.mira4j.network.Packet;
 import com.sekwah.mira4j.network.PacketBuf;
 
-public class HelloPacket implements Packet<ClientListener> {
+public class PingPacket implements Packet<ClientListener> {
     private int nonce;
-    private byte[] data;
-    
-    @Override
-    public void readData(PacketBuf reader) {
-        nonce = reader.readUnsignedShortBE();
-        data = reader.readBytes(reader.readableBytes());
+
+    public PingPacket() {
+
+    }
+
+    public PingPacket(int nonce) {
+        this.nonce = nonce;
     }
 
     @Override
-    public void writeData(PacketBuf writer) {}
+    public void readData(PacketBuf reader) {
+        nonce = reader.readUnsignedShortBE();
+    }
+
+    @Override
+    public void writeData(PacketBuf writer) {
+        writer.writeShortBE(nonce);
+    }
 
     @Override
     public void forwardPacket(ClientListener listener) {
-        listener.onHelloPacket(this);
+        listener.onKeepAlivePacket(this);
     }
 
     public int getNonce() {
         return nonce;
-    }
-    
-    public byte[] getData() {
-        return data;
     }
 }
