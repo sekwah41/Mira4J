@@ -3,7 +3,7 @@ package com.sekwah.mira4j.network.packets.server;
 import com.sekwah.mira4j.network.Packet;
 import com.sekwah.mira4j.network.PacketBuf;
 
-public class SHelloPacket implements Packet<SClientListener> {
+public class SHelloPacket implements Packet {
     private int nonce;
     private byte[] data;
 
@@ -15,11 +15,6 @@ public class SHelloPacket implements Packet<SClientListener> {
 
     @Override
     public void writeData(PacketBuf writer) {}
-
-    @Override
-    public void forwardPacket(SClientListener listener) {
-        listener.onHelloPacket(this);
-    }
 
     public int getNonce() {
         return nonce;

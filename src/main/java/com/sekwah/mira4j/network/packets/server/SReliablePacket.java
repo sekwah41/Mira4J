@@ -1,13 +1,13 @@
 package com.sekwah.mira4j.network.packets.server;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.sekwah.mira4j.network.Packet;
 import com.sekwah.mira4j.network.PacketBuf;
 import com.sekwah.mira4j.network.decoder.HazelDecoder;
 
-public class SReliablePacket implements Packet<SClientListener> {
+import java.util.ArrayList;
+import java.util.List;
+
+public class SReliablePacket implements Packet {
     private int nonce;
     private List<SHazelMessage> messages;
 
@@ -45,11 +45,6 @@ public class SReliablePacket implements Packet<SClientListener> {
         for(SHazelMessage msg : messages) {
             msg.writeData(writer);
         }
-    }
-
-    @Override
-    public void forwardPacket(SClientListener listener) {
-        listener.onReliablePacket(this);
     }
 
     public int getNonce() {

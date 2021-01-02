@@ -1,15 +1,14 @@
 package com.sekwah.mira4j.network;
 
-import java.nio.charset.StandardCharsets;
-import java.util.LinkedList;
-
 import com.sekwah.mira4j.game.GameOptionsData;
-
 import com.sekwah.mira4j.math.Vector2;
 import com.sekwah.mira4j.network.data.Maps;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+
 import javax.annotation.Nonnull;
+import java.nio.charset.StandardCharsets;
+import java.util.LinkedList;
 
 public class PacketBuf {
     private LinkedList<ByteBuf> messages = new LinkedList<>();

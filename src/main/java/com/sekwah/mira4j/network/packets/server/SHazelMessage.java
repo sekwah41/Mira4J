@@ -4,7 +4,7 @@ import com.sekwah.mira4j.network.Packet;
 import com.sekwah.mira4j.network.PacketBuf;
 import com.sekwah.mira4j.network.data.MessageType;
 
-public class SHazelMessage implements Packet<SClientListener> {
+public class SHazelMessage implements Packet {
     private int type;
     private byte[] data;
 
@@ -33,9 +33,6 @@ public class SHazelMessage implements Packet<SClientListener> {
     }
 
     protected void writeData0(PacketBuf writer) {}
-
-    @Override
-    public void forwardPacket(SClientListener listener) {}
 
     public byte[] getData() {
         return data;

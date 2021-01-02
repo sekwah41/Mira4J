@@ -3,7 +3,7 @@ package com.sekwah.mira4j.network.packets.server;
 import com.sekwah.mira4j.network.Packet;
 import com.sekwah.mira4j.network.PacketBuf;
 
-public class SAcknowledgePacket implements Packet<SClientListener> {
+public class SAcknowledgePacket implements Packet {
     private int nonce;
     private int missing_packets;
 
@@ -26,11 +26,6 @@ public class SAcknowledgePacket implements Packet<SClientListener> {
     public void writeData(PacketBuf writer) {
         writer.writeShortBE(nonce);
         writer.writeByte(missing_packets);
-    }
-
-    @Override
-    public void forwardPacket(SClientListener listener) {
-        listener.onAcknowledgePacket(this);
     }
 
     public int getNonce() {

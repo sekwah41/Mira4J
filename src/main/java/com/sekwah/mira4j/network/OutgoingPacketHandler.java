@@ -1,7 +1,6 @@
 package com.sekwah.mira4j.network;
 
 import com.sekwah.mira4j.network.data.PacketType;
-
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;

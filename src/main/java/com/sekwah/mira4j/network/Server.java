@@ -1,18 +1,22 @@
 package com.sekwah.mira4j.network;
 
-import static com.sekwah.mira4j.Mira4J.*;
-
-import java.net.BindException;
-import java.util.*;
-
 import com.sekwah.mira4j.config.ServerConfig;
 import com.sekwah.mira4j.network.packets.server.SClientListener;
-
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.*;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.ChannelPipeline;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.DatagramChannel;
 import io.netty.channel.socket.nio.NioDatagramChannel;
+
+import java.net.BindException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
+import static com.sekwah.mira4j.Mira4J.LOGGER;
 
 public class Server implements Runnable {
 

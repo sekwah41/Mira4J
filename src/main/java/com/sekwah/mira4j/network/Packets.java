@@ -1,14 +1,14 @@
 package com.sekwah.mira4j.network;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.sekwah.mira4j.Mira4J;
 import com.sekwah.mira4j.network.data.MessageType;
 import com.sekwah.mira4j.network.data.PacketType;
 import com.sekwah.mira4j.network.packets.server.*;
 import com.sekwah.mira4j.network.packets.server.hazel.HostGamePacket;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Packets {
     private static final Map<PacketType, Class<? extends Packet<?>>> packets;

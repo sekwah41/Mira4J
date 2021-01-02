@@ -1,14 +1,13 @@
 package com.sekwah.mira4j.network;
 
-import java.util.Arrays;
-
 import com.sekwah.mira4j.Mira4J;
 import com.sekwah.mira4j.network.data.PacketType;
-
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.DatagramPacket;
+
+import java.util.Arrays;
 
 public class IncomingPacketHandler extends SimpleChannelInboundHandler<DatagramPacket> {
     private final ConnectionManager manager;

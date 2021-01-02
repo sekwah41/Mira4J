@@ -1,7 +1,5 @@
 package com.sekwah.mira4j.network.data;
 
-import com.sekwah.mira4j.network.Packets;
-
 public enum PacketType {
     NORMAL(0x00),
     RELIABLE(0x01),
