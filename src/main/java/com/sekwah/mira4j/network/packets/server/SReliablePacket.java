@@ -3,23 +3,24 @@ package com.sekwah.mira4j.network.packets.server;
 import com.sekwah.mira4j.network.Packet;
 import com.sekwah.mira4j.network.PacketBuf;
 import com.sekwah.mira4j.network.decoder.HazelDecoder;
+import com.sekwah.mira4j.network.packets.HazelMessage;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SReliablePacket implements Packet {
     private int nonce;
-    private List<SHazelMessage> messages;
+    private List<HazelMessage> messages;
 
     public SReliablePacket() {
 
     }
 
-    public SReliablePacket(int nonce, SHazelMessage... args) {
+    public SReliablePacket(int nonce, HazelMessage... args) {
         this.nonce = nonce;
         messages = new ArrayList<>();
 
-        for(SHazelMessage msg : args) {
+        for(HazelMessage msg : args) {
             messages.add(msg);
         }
     }
@@ -33,7 +34,7 @@ public class SReliablePacket implements Packet {
         messages = new ArrayList<>();
         int max_tries = 10;
         while(wrap.readableBytes() > 0 && (max_tries-- > 0)) {
-            SHazelMessage msg = HazelDecoder.decode(wrap);
+            HazelMessage msg = HazelDecoder.decode(wrap);
             if(msg == null) continue;
             messages.add(msg);
         }
@@ -42,7 +43,7 @@ public class SReliablePacket implements Packet {
     @Override
     public void writeData(PacketBuf writer) {
         writer.writeUnsignedShortBE(nonce);
-        for(SHazelMessage msg : messages) {
+        for(HazelMessage msg : messages) {
             msg.writeData(writer);
         }
     }
@@ -51,7 +52,7 @@ public class SReliablePacket implements Packet {
         return nonce;
     }
 
-    public List<SHazelMessage> getMessages() {
+    public List<HazelMessage> getMessages() {
         return messages;
     }
 }

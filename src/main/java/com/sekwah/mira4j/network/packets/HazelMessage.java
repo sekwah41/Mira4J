@@ -1,18 +1,18 @@
-package com.sekwah.mira4j.network.packets.server;
+package com.sekwah.mira4j.network.packets;
 
 import com.sekwah.mira4j.network.Packet;
 import com.sekwah.mira4j.network.PacketBuf;
 import com.sekwah.mira4j.network.data.MessageType;
 
-public class SHazelMessage implements Packet {
+public abstract class HazelMessage implements Packet {
     private int type;
     private byte[] data;
 
-    public SHazelMessage() {
+    public HazelMessage() {
 
     }
 
-    public SHazelMessage(MessageType type) {
+    public HazelMessage(MessageType type) {
         this.type = type.getId();
     }
 
@@ -24,7 +24,7 @@ public class SHazelMessage implements Packet {
     @Override
     public final void writeData(PacketBuf writer) {
         PacketBuf buf = PacketBuf.create(4096);
-        writeData0(buf);
+        writeHazelData(buf);
         byte[] data = buf.readBytes(buf.readableBytes());
         buf.release();
         writer.writeShort(data.length);
@@ -32,7 +32,7 @@ public class SHazelMessage implements Packet {
         writer.writeBytes(data);
     }
 
-    protected void writeData0(PacketBuf writer) {}
+    public abstract void writeHazelData(PacketBuf writer);
 
     public byte[] getData() {
         return data;

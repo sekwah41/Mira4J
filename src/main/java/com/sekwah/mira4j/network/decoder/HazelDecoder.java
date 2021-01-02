@@ -3,14 +3,14 @@ package com.sekwah.mira4j.network.decoder;
 import com.sekwah.mira4j.network.PacketBuf;
 import com.sekwah.mira4j.network.Packets;
 import com.sekwah.mira4j.network.data.MessageType;
-import com.sekwah.mira4j.network.packets.server.SHazelMessage;
+import com.sekwah.mira4j.network.packets.HazelMessage;
 
 public class HazelDecoder {
-    public static SHazelMessage decode(PacketBuf reader) {
+    public static HazelMessage decode(PacketBuf reader) {
         int length = reader.readUnsignedShort();
         int type = reader.readUnsignedByte();
 
-        SHazelMessage packet = Packets.getHazelPacket(MessageType.fromId(type));
+        HazelMessage packet = Packets.getHazelPacket(MessageType.fromId(type));
         if(packet == null) {
             reader.skipBytes(length);
             return null;

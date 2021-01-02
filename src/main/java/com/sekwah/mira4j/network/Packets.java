@@ -3,6 +3,7 @@ package com.sekwah.mira4j.network;
 import com.sekwah.mira4j.Mira4J;
 import com.sekwah.mira4j.network.data.MessageType;
 import com.sekwah.mira4j.network.data.PacketType;
+import com.sekwah.mira4j.network.packets.HazelMessage;
 import com.sekwah.mira4j.network.packets.server.*;
 import com.sekwah.mira4j.network.packets.server.hazel.HostGamePacket;
 
@@ -11,8 +12,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Packets {
-    private static final Map<PacketType, Class<? extends Packet<?>>> packets;
-    private static final Map<MessageType, Class<? extends SHazelMessage>> hazel_packets;
+    private static final Map<PacketType, Class<? extends Packet>> packets;
+    private static final Map<MessageType, Class<? extends HazelMessage>> hazel_packets;
 
     static {
         packets = new HashMap<>();
@@ -28,8 +29,8 @@ public class Packets {
         hazel_packets.put(MessageType.HostGame, HostGamePacket.class);
     }
 
-    public static Packet<?> getPacketFromType(PacketType type) {
-        Class<? extends Packet<?>> clazz = packets.get(type);
+    public static Packet getPacketFromType(PacketType type) {
+        Class<? extends Packet> clazz = packets.get(type);
         if(clazz == null) {
             Mira4J.LOGGER.error("Failed to create packet of type {}", type.toString());
             return null;
@@ -48,14 +49,14 @@ public class Packets {
 
     public static PacketType getPacketType(Class<?> clazz) {
         for(PacketType key : packets.keySet()) {
-            Class<? extends Packet<?>> item = packets.get(key);
+            Class<? extends Packet> item = packets.get(key);
             if(item.equals(clazz)) return key;
         }
         return null;
     }
 
-    public static SHazelMessage getHazelPacket(MessageType type) {
-        Class<? extends SHazelMessage> clazz = hazel_packets.get(type);
+    public static HazelMessage getHazelPacket(MessageType type) {
+        Class<? extends HazelMessage> clazz = hazel_packets.get(type);
         if(clazz == null) {
             Mira4J.LOGGER.error("Failed to create packet of type {}", type.toString());
             return null;

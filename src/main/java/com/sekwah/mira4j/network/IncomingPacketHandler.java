@@ -36,7 +36,7 @@ public class IncomingPacketHandler extends SimpleChannelInboundHandler<DatagramP
     private void decode(ChannelHandlerContext ctx, ByteBuf buf) throws Exception {
         PacketType packetType = PacketType.fromId(buf.readUnsignedByte());
 
-        Packet<?> packet = Packets.getPacketFromType(packetType);
+        Packet packet = Packets.getPacketFromType(packetType);
         if (packet == null) return;
         packet.readData(PacketBuf.wrap(buf));
 

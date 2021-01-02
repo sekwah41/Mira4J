@@ -9,7 +9,7 @@ import io.netty.channel.ChannelPromise;
 public class OutgoingPacketHandler extends ChannelOutboundHandlerAdapter {
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) {
         if (!(msg instanceof Packet)) return;
-        Packet<?> packet = (Packet<?>)msg;
+        Packet packet = (Packet)msg;
 
         ByteBuf buf = ctx.alloc().ioBuffer();
         PacketType type = Packets.getPacketType(packet.getClass());

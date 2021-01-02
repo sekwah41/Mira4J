@@ -2,9 +2,9 @@ package com.sekwah.mira4j.network.packets.server.hazel;
 
 import com.sekwah.mira4j.game.GameOptionsData;
 import com.sekwah.mira4j.network.PacketBuf;
-import com.sekwah.mira4j.network.packets.server.SHazelMessage;
+import com.sekwah.mira4j.network.packets.HazelMessage;
 
-public class HostGamePacket extends SHazelMessage {
+public class HostGamePacket extends HazelMessage {
     private GameOptionsData data;
 
     public HostGamePacket() {
@@ -21,7 +21,7 @@ public class HostGamePacket extends SHazelMessage {
     }
 
     @Override
-    public void writeData0(PacketBuf writer) {
+    public void writeHazelData(PacketBuf writer) {
         writer.writeGameOptionsData(data);
     }
 

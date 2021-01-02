@@ -2,9 +2,9 @@ package com.sekwah.mira4j.network.packets.client;
 
 import com.sekwah.mira4j.network.PacketBuf;
 import com.sekwah.mira4j.network.data.MessageType;
-import com.sekwah.mira4j.network.packets.server.SHazelMessage;
+import com.sekwah.mira4j.network.packets.HazelMessage;
 
-public class CHostGamePacket extends SHazelMessage {
+public class CHostGamePacket extends HazelMessage {
     private int gameId;
 
     public CHostGamePacket(int gameId) {
@@ -18,7 +18,7 @@ public class CHostGamePacket extends SHazelMessage {
     }
 
     @Override
-    public void writeData0(PacketBuf writer) {
+    public void writeHazelData(PacketBuf writer) {
         writer.writeInt(gameId);
     }
 }

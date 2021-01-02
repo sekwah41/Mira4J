@@ -10,11 +10,12 @@ import java.net.InetSocketAddress;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class ConnectionManager extends SimpleChannelInboundHandler<Packet<?>> {
+public class ConnectionManager extends SimpleChannelInboundHandler<Packet> {
 
-    private final Queue<Packet<?>> packetQueue = new ConcurrentLinkedQueue<>();
+    private final Queue<Packet> packetQueue = new ConcurrentLinkedQueue<>();
+
     public DatagramChannel channel;
-    private PacketListener listener;
+
     private boolean hasRemote;
 
     @Override
@@ -29,22 +30,9 @@ public class ConnectionManager extends SimpleChannelInboundHandler<Packet<?>> {
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, Packet<?> msg) throws Exception {
-        forwardToPacket(msg, listener);
+    protected void channelRead0(ChannelHandlerContext ctx, Packet msg) throws Exception {
+        System.out.println("SOME READ THINGY");
     }
-
-    @SuppressWarnings("unchecked")
-    private <T> void forwardToPacket(Packet<T> packet, PacketListener packetListener) {
-        try {
-            packet.forwardPacket((T)packetListener);
-        } catch(ClassCastException e) {
-            e.printStackTrace();
-        }
-    }
-
-//    public boolean hasChannel() {
-//        return channel != null;
-//    }
 
     public boolean hasClient() {
         return channel != null && (!hasRemote || channel.isConnected()) && channel.isOpen();
@@ -58,7 +46,7 @@ public class ConnectionManager extends SimpleChannelInboundHandler<Packet<?>> {
         }
     }
 
-    private void sendPacketBack(Packet<?> packet) {
+    private void sendPacketBack(Packet packet) {
         if (channel.eventLoop().inEventLoop()) {
             ChannelFuture channelfuture = this.channel.writeAndFlush(packet);
             channelfuture.addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
@@ -74,7 +62,7 @@ public class ConnectionManager extends SimpleChannelInboundHandler<Packet<?>> {
         if (!hasClient()) return;
 
         synchronized (packetQueue) {
-            Packet<?> packet = null;
+            Packet packet = null;
             while ((packet = packetQueue.poll()) != null) {
                 sendPacketBack(packet);
             }
@@ -88,17 +76,13 @@ public class ConnectionManager extends SimpleChannelInboundHandler<Packet<?>> {
         }
     }
 
-    public void sendPacket(Packet<?> packet) {
+    public void sendPacket(Packet packet) {
         if (hasClient()) {
             updateQueue();
             sendPacketBack(packet);
         } else {
             packetQueue.add(packet);
         }
-    }
-
-    public void setPacketListener(PacketListener packetListener) {
-        listener = packetListener;
     }
 
     public void disconnect() {
