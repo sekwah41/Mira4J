@@ -10,16 +10,13 @@ import io.netty.channel.socket.DatagramPacket;
 import java.util.Arrays;
 
 public class IncomingPacketHandler extends SimpleChannelInboundHandler<DatagramPacket> {
-    private final ConnectionManager manager;
 
-    public IncomingPacketHandler(ConnectionManager manager) {
-        this.manager = manager;
+    public IncomingPacketHandler() {
     }
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, DatagramPacket msg) throws Exception {
         ByteBuf buf = msg.content();
-        manager.connect(msg.sender());
 
         buf.markReaderIndex();
         final int readableBytes = buf.readableBytes();

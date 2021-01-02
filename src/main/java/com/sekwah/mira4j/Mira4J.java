@@ -35,9 +35,6 @@ public class Mira4J {
             e.printStackTrace();
             System.exit(-1);
         }
-
-        // Just to force the threads to close :P Don't wanna make a mistake and leave background threads open.
-        System.exit(0);
     }
 
 }

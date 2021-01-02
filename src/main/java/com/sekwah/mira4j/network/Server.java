@@ -10,21 +10,19 @@ import io.netty.channel.socket.DatagramChannel;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 
 import java.net.BindException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
 
 import static com.sekwah.mira4j.Mira4J.LOGGER;
 
-public class Server implements Runnable {
+public class Server {
 
     private static Server instance;
     private final int port;
     private final String address;
 
-    private final List<ConnectionManager> managers = Collections.synchronizedList(new ArrayList<ConnectionManager>());
-    private final Thread tickThread = new Thread(this);
+    // Milliseconds / tickRate
+    private long tickDelay = 1000 / 30;
+
+    //private final Thread tickThread = new Thread(new ServerTicker(this));
 
     public static Server getInstance() {
         return instance;
@@ -40,8 +38,6 @@ public class Server implements Runnable {
     public void start() throws InterruptedException, BindException {
         final NioEventLoopGroup group = new NioEventLoopGroup();
         try {
-            tickThread.setDaemon(true); // tell the vm not to wait for this thread to close
-            tickThread.start();
 
             final Bootstrap b = new Bootstrap();
             b.group(group).channel(NioDatagramChannel.class)
@@ -49,16 +45,11 @@ public class Server implements Runnable {
                     .handler(new ChannelInitializer<DatagramChannel>() {
                         @Override
                         public void initChannel(final DatagramChannel ch) throws Exception {
-                            ConnectionManager manager = new ConnectionManager();
-
                             ChannelPipeline p = ch.pipeline();
                             p.addLast(
-                                new IncomingPacketHandler(manager),
-                                new OutgoingPacketHandler()
+                                    new IncomingPacketHandler(),
+                                    new OutgoingPacketHandler()
                             );
-
-                            managers.add(manager);
-                            p.addLast(manager);
                         }
                     });
 
@@ -69,50 +60,47 @@ public class Server implements Runnable {
         }
     }
 
-    public void tick() {
-        synchronized(managers) {
-            Iterator<ConnectionManager> iterator = managers.iterator();
-            while(iterator.hasNext()) {
-                ConnectionManager manager = iterator.next();
+    /**
+     * Not used for now. Though useful for later
+     * tickThread.setDaemon(true); // tell the vm not to wait for this thread to close
+     * tickThread.start();
+     */
+    public class ServerTicker implements Runnable {
 
-                // Mira4J.LOGGER.info("hasClient: {} {}", manager, manager.hasClient());
-                if(manager.hasClient()) {
-                    try {
-                        manager.tick();
-                    } catch(Exception e) {
-                        e.printStackTrace();
-                    }
+        private Server server;
 
-                    continue;
-                }
-
-                iterator.remove();
-                manager.disconnect();
-            }
+        public ServerTicker(Server server) {
+            this.server = server;
         }
-    }
 
-    @Override
-    public void run() {
-        long last = System.currentTimeMillis();
-        try {
-            while(true) {
-                if(Thread.interrupted())
-                    break;
+        public void tick() {
 
-                long now = System.currentTimeMillis();
+        }
 
-                // Tell the player that the server is overloaded ???
-                if(now + 20L > last) {
-                    last += 20L;
+        @Override
+        public void run() {
+            long last = System.currentTimeMillis();
+            try {
+                while(true) {
+                    if(Thread.interrupted())
+                        break;
+
+                    last += tickDelay;
+
+                    System.out.println("TICK");
 
                     tick();
-                } else {
-                    Thread.sleep(1);
+
+                    // Tell the player that the server is overloaded ???
+                    long delay = last - System.currentTimeMillis();
+                    if(delay < 0) {
+                        LOGGER.info("Server overloaded.");
+                    }
+                    Thread.sleep(delay);
                 }
+            } catch(InterruptedException e) {
+                e.printStackTrace();
             }
-        } catch(InterruptedException e) {
-            e.printStackTrace();
         }
     }
 }
